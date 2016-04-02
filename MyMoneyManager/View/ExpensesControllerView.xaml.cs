@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MyMoneyManager.ViewModel;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -13,14 +14,23 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MyMoneyManager
+namespace MyMoneyManager.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для ExpensesControllerView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ExpensesControllerView : UserControl
     {
-        public MainWindow()
+
+        private ExpensesControllerViewModel _viewModel;
+
+        public ExpensesControllerViewModel ViewModel
+        {
+            get { return _viewModel; }
+            set { _viewModel = value; }
+        }
+
+        public ExpensesControllerView()
         {
             InitializeComponent();
         }

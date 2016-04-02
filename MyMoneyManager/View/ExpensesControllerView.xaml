@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="MyMoneyManager.View.ExpensesControllerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MyMoneyManager.View"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="400"
+             d:DesignWidth="600"
+             mc:Ignorable="d">
+    <Grid FocusManager.FocusedElement="{Binding 
+                       ElementName=placeHolder}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox x:Name="placeHolder"
+                 Width="302"
+                 Height="23"
+                 Margin="10,17,0,0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Text="{Binding Path=SearchText,
+                                Mode=TwoWay}"
+                 TextWrapping="Wrap"
+                 
+                 local:FocusExtension.IsFocused="{Binding IsTextBoxFocused}"/>
+        <ScrollViewer Grid.Row="1"
+                      Width="302"
+                      Margin="10,20,0,10"
+                      HorizontalAlignment="Left">
+            <Grid>
+                <DataGrid x:Name="dataGrid" />
+            </Grid>
+        </ScrollViewer>
+
+
+    </Grid>
+</UserControl>

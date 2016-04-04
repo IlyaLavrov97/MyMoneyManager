@@ -4,34 +4,70 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:MyMoneyManager.View"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             d:DesignHeight="400"
-             d:DesignWidth="600"
+             d:DesignHeight="700"
+             d:DesignWidth="1000"
              mc:Ignorable="d">
-    <Grid FocusManager.FocusedElement="{Binding 
-                       ElementName=placeHolder}">
+    <Grid FocusManager.FocusedElement="{Binding ElementName=placeHolder}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="0.5*" />
+        </Grid.ColumnDefinitions>
+        <TabControl x:Name="tabControl"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Margin="10"
+                    TabStripPlacement="Top">
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5" />
+            </TabItem>
+            <TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5" />
+            </TabItem>
+        </TabControl>
         <TextBox x:Name="placeHolder"
-                 Width="302"
-                 Height="23"
-                 Margin="10,17,0,0"
-                 HorizontalAlignment="Left"
-                 VerticalAlignment="Top"
+                 Grid.Row="0"
+                 Grid.Column="0"
+                 Height="Auto"
+                 Margin="10,10,10,10"
                  Text="{Binding Path=SearchText,
                                 Mode=TwoWay}"
                  TextWrapping="Wrap"
-                 
-                 local:FocusExtension.IsFocused="{Binding IsTextBoxFocused}"/>
+                 local:FocusExtension.IsFocused="{Binding IsTextBoxFocused}" />
         <ScrollViewer Grid.Row="1"
-                      Width="302"
-                      Margin="10,20,0,10"
-                      HorizontalAlignment="Left">
+                      Grid.Column="0"
+                      Margin="10,10,10,10">
             <Grid>
                 <DataGrid x:Name="dataGrid" />
             </Grid>
         </ScrollViewer>
+        <Button x:Name="saveButton"
+                Grid.Row="2"
+                Grid.Column="0"
+                Width="75"
+                Margin="20,20,0,20"
+                HorizontalAlignment="Left"
+                Content="Сохранить" />
+        <CheckBox x:Name="writeCheckBox"
+                  Grid.Row="2"
+                  Grid.Column="0"
+                  Margin="150,23,0,21"
+                  HorizontalAlignment="Left"
+                  Content="Редактировать" />
+        <Expander x:Name="infoExpander"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Width="250"
+                  Margin="10,5,0,10"
+                  HorizontalAlignment="Left"
+                  ExpandDirection="Right"
+                  Header="Информация">
+            <Grid Background="#FFE5E5E5" />
+        </Expander>
 
 
     </Grid>

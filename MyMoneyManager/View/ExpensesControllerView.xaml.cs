@@ -33,6 +33,21 @@ namespace MyMoneyManager.View
         public ExpensesControllerView()
         {
             InitializeComponent();
+            placeHolder.Text = "Enter text here...";
+
+            placeHolder.GotFocus += PlaceHolder_GotFocus;
+            placeHolder.LostFocus += PlaceHolder_LostFocus;
+        }
+
+        private void PlaceHolder_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(placeHolder.Text))
+                placeHolder.Text = "Enter text here...";
+        }
+
+        private void PlaceHolder_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeHolder.Text = "";
         }
     }
 }

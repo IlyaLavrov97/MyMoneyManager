@@ -69,6 +69,9 @@
     <Compile Include="View\ExpensesControllerView.xaml.cs">
       <DependentUpon>ExpensesControllerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\IncomingControllerView.xaml.cs">
+      <DependentUpon>IncomingControllerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MMMView.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>MMMView.xaml</DependentUpon>
@@ -103,7 +106,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Theme\Brushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theme\Core.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ExpensesControllerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\IncomingControllerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

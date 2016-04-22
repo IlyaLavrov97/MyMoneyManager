@@ -60,12 +60,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\FocusExtension.cs" />
-    <Compile Include="ViewModel\Command.cs" />
-    <Compile Include="Model\ExpensesInfo.cs" />
-    <Compile Include="Model\ExpensesType.cs" />
+    <Compile Include="IMainTabItem.cs" />
+    <Compile Include="Model\Expenses\BusinessObject\ExpensesInfo.cs" />
+    <Compile Include="Model\Expenses\ExpensesType.cs" />
+    <Compile Include="Model\Expenses\ViewObject\ViewExpensesInfo.cs" />
+    <Compile Include="ViewModel\AddOrEditExpensesViewModel.cs" />
+    <Compile Include="ViewModel\ClassesForVM\BoolToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\ClassesForVM\Mediator\IConnectedExpensesViewModel.cs" />
+    <Compile Include="ViewModel\ClassesForVM\Mediator\IMediator.cs" />
+    <Compile Include="ViewModel\ClassesForVM\Mediator\MediatorForVM.cs" />
+    <Compile Include="ViewModel\ClassesForVM\RelayCommand.cs" />
     <Compile Include="ViewModel\ExpensesControllerViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ClassesForVM\ViewModelBase.cs" />
+    <Compile Include="ViewModel\IncomingControllerViewModel.cs" />
+    <Compile Include="View\AddOrEditExpensesView.xaml.cs">
+      <DependentUpon>AddOrEditExpensesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ExpensesControllerView.xaml.cs">
       <DependentUpon>ExpensesControllerView.xaml</DependentUpon>
     </Compile>
@@ -106,11 +116,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Theme\Brushes.xaml">
+    <Page Include="Theme\DarkBlueUI\Brushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Theme\Core.xaml">
+    <Page Include="Theme\DarkBlueUI\Core.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddOrEditExpensesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

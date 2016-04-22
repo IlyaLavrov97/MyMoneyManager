@@ -10,20 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MyMoneyManager.ViewModel;
 
 namespace MyMoneyManager.View
 {
-
-    
     /// <summary>
-    /// Логика взаимодействия для MMMView.xaml
+    /// Логика взаимодействия для AddOrEditExpenses.xaml
     /// </summary>
-    public partial class MMMView : Window
+    public partial class AddOrEditExpensesView : UserControl
     {
-
-        public MMMView()
+        public AddOrEditExpensesView()
         {
             InitializeComponent();
         }

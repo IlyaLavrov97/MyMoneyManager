@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyMoneyManager.Model
+namespace MyMoneyManager.Model.Expenses
 {
     public enum ExpensesType
     {
-        OnTransportExpenses = 1,
-        OnFoodExpenses = 2,
-        Another = 3
+        Transport = 1,
+        Food = 2,
+        Health = 3,
+        Entertainment= 4,
+        Other = 5
     }
 }

@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyMoneyManager.Model
+namespace MyMoneyManager.Model.Expenses.ViewObject
 {
-    public class ExpensesInfo
+    public class ViewExpensesInfo
     {
 
         #region Свойства
+
+        ///<summary>
+        /// Id затраты.
+        /// </summary>
+        public Guid Id { get; private set; }
+
         ///<summary>
         /// Величина затраты.
         ///<summary>
@@ -23,7 +29,7 @@ namespace MyMoneyManager.Model
         ///<summary>
         /// Дата, когда была осуществленна трата.
         ///<summary>
-        public DateTime СostsDate { get; private set; }
+        public string СostsDate { get; private set; }
 
         /// <summary>
         /// Тип затраты.
@@ -31,8 +37,18 @@ namespace MyMoneyManager.Model
         public ExpensesType ExpensesType { get; private set; }
         #endregion
 
-        public ExpensesInfo(double expenditure, string comment, DateTime costsDate, ExpensesType expensesType)
+        public ViewExpensesInfo(double expenditure, string comment, string costsDate, ExpensesType expensesType)
         {
+            Id = Guid.NewGuid();
+            Expenditure = expenditure;
+            Comment = comment;
+            СostsDate = costsDate;
+            ExpensesType = expensesType;
+        }
+
+        public ViewExpensesInfo(Guid id, double expenditure, string comment, string costsDate, ExpensesType expensesType)
+        {
+            Id = id;
             Expenditure = expenditure;
             Comment = comment;
             СostsDate = costsDate;
@@ -40,3 +56,4 @@ namespace MyMoneyManager.Model
         }
     }
 }
+

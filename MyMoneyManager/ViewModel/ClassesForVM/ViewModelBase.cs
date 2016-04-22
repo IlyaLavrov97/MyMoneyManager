@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using MyMoneyManager.Model;
+using MyMoneyManager.ViewModel.ClassesForVM.Mediator;
 
-namespace MyMoneyManager.ViewModel
+namespace MyMoneyManager.ViewModel.ClassesForVM
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
@@ -20,6 +22,5 @@ namespace MyMoneyManager.ViewModel
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

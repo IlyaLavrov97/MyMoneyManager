@@ -6,18 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
         Title="MMMView"
-        MinWidth="800"
-        MinHeight="500"
-        BorderBrush="Black"
-        OpacityMask="Black"
-        WindowStyle="ThreeDBorderWindow">
-    <Window.Background>
-        <RadialGradientBrush>
-            <GradientStop Color="Black" Offset="1"/>
-            <GradientStop Color="#FFFFAE00"/>
-        </RadialGradientBrush>
-    </Window.Background>
-    <Grid OpacityMask="Black">
+        MinWidth="1100"
+        MinHeight="630"
+        Background="#FF494949">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
@@ -63,33 +55,39 @@
                        Width="56"
                        Height="55"
                        Margin="10,0,0,0"
-                       
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top" />
                 <TextBlock x:Name="MyTB"
-                           Text="Имя"
                            Width="73"
                            Margin="0,10,10,110"
-                           HorizontalAlignment="Right" />
+                           HorizontalAlignment="Right"
+                           Text="Имя" />
                 <TextBlock x:Name="MyTB_Copy"
-                           Text="Фамилия"
                            Width="73"
                            Margin="0,35,10,85"
-                           HorizontalAlignment="Right" />
+                           HorizontalAlignment="Right"
+                           Text="Фамилия" />
                 <TextBlock x:Name="MyTB_Copy1"
-                           Text="Номер счета"
                            Width="134"
                            Height="16"
                            Margin="10,0,0,30"
                            HorizontalAlignment="Left"
-                           VerticalAlignment="Bottom" />
+                           VerticalAlignment="Bottom"
+                           Text="Номер счета" />
             </Grid>
         </GroupBox>
         <TabControl x:Name="tabControl"
                     Grid.Row="1"
                     Grid.RowSpan="2"
                     Grid.Column="1"
-                    Margin="10,10,10,10" />
+                    Margin="10,10,10,10">
+            <TabItem Header="Расходы">
+                <local:ExpensesControllerView />
+            </TabItem>
+            <TabItem Header="Доходы">
+                <local:IncomingControllerView />
+            </TabItem>
+        </TabControl>
 
         <Calendar Grid.Row="2"
                   Width="179"

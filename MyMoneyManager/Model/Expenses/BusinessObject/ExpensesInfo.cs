@@ -1,12 +1,24 @@
-﻿using System;
+﻿using MyMoneyManager.Model.Expenses.ViewObject;
+using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace MyMoneyManager.Model.Expenses.BusinessObject
 {
-    public class ExpensesInfo
+    class CustomDateTimeConverter : IsoDateTimeConverter
+    {
+        public CustomDateTimeConverter()
+        {
+            DateTimeFormat = "dd/MM/yyyy";
+        }
+    }
+
+    public class ExpensesInfo : IMoneyElement
     {
 
         #region Свойства
@@ -29,7 +41,9 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
         ///<summary>
         /// Дата, когда была осуществленна трата.
         ///<summary>
-        public DateTime СostsDate { get; private set; }
+        // TODO не установлен приватный сеттер потому что возникают проблемы при десериализации даты.  
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTime СostsDate { get; set; }
 
         /// <summary>
         /// Тип затраты.
@@ -37,6 +51,7 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
         public ExpensesType ExpensesType { get; private set; }
         #endregion
 
+        
         public ExpensesInfo(double expenditure, string comment, DateTime costsDate, ExpensesType expensesType)
         {
             Id = Guid.NewGuid();
@@ -46,6 +61,7 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
             ExpensesType = expensesType;
         }
 
+        [JsonConstructor]
         public ExpensesInfo(Guid id, double expenditure, string comment, DateTime costsDate, ExpensesType expensesType)
         {
             Id = id;
@@ -53,6 +69,21 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
             Comment = comment;
             СostsDate = costsDate;
             ExpensesType = expensesType;
+        }
+
+        public void ConvertToVO(out IViewElement newVO)
+        {
+            newVO = new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), ExpensesType.GetType()
+                                                    .GetMember(ExpensesType.ToString())[0]
+                                                    .GetCustomAttributes(true)
+                                                    .OfType<DescriptionAttribute>()
+                                                    .First()
+                                                    .Description);
+        }
+
+        public Guid GetId()
+        {
+            return Id;
         }
     }
 }

@@ -35,6 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiveCharts, Version=0.6.7.0, Culture=neutral, PublicKeyToken=d1901e6ed2eb0532, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.6.7.0\lib\net46\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -61,11 +69,25 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IMainTabItem.cs" />
+    <Compile Include="DefaultValuesForControllers.cs" />
+    <Compile Include="ViewModel\LineChartViewModel.cs" />
+    <Compile Include="ViewModel\PieChartViewModel.cs" />
+    <Compile Include="View\LineChartView.xaml.cs">
+      <DependentUpon>LineChartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PieChartView.xaml.cs">
+      <DependentUpon>PieChartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Workers\EnumWorker.cs" />
+    <Compile Include="Workers\JsonWorker.cs" />
     <Compile Include="Model\Expenses\BusinessObject\ExpensesInfo.cs" />
     <Compile Include="Model\Expenses\ExpensesType.cs" />
+    <Compile Include="Model\IMoneyElement.cs" />
     <Compile Include="Model\Expenses\ViewObject\ViewExpensesInfo.cs" />
+    <Compile Include="Model\IViewElement.cs" />
     <Compile Include="ViewModel\AddOrEditExpensesViewModel.cs" />
     <Compile Include="ViewModel\ClassesForVM\BoolToVisibilityConverter.cs" />
+    <Compile Include="ViewModel\ClassesForVM\MyObjectsConverter.cs" />
     <Compile Include="ViewModel\ClassesForVM\Mediator\IConnectedExpensesViewModel.cs" />
     <Compile Include="ViewModel\ClassesForVM\Mediator\IMediator.cs" />
     <Compile Include="ViewModel\ClassesForVM\Mediator\MediatorForVM.cs" />
@@ -86,6 +108,7 @@
       <SubType>Code</SubType>
       <DependentUpon>MMMView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Workers\MoneyWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewModel\MMMViewModel.cs" />
@@ -106,6 +129,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -136,7 +160,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\LineChartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MMMView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PieChartView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

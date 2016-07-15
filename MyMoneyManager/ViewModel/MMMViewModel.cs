@@ -8,5 +8,15 @@ namespace MyMoneyManager.ViewModel
 {
     public class MMMViewModel
     {
+        DefaultValuesForControllers defaultValues = DefaultValuesForControllers.Instance;
+        public MMMViewModel()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            
+        }
     }
 }

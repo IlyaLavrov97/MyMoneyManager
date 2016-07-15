@@ -5,10 +5,16 @@
         xmlns:local="clr-namespace:MyMoneyManager.View"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        xmlns:viewmodels="clr-namespace:MyMoneyManager.ViewModel"
         Title="MMMView"
         MinWidth="1100"
         MinHeight="630"
         Background="#FF494949">
+
+    <Window.DataContext>
+        <viewmodels:MMMViewModel />
+    </Window.DataContext>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />

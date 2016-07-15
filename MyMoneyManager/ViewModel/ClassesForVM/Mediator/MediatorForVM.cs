@@ -8,6 +8,8 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
 
         public IConnectedExpensesViewModel ExpensesController;
         public IConnectedExpensesViewModel AddOrEditExpenses;
+        public IConnectedExpensesViewModel LineChart;
+        public IConnectedExpensesViewModel PieChart;
 
         private MediatorForVM() { }
 
@@ -25,7 +27,10 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
 
         public void SendExpensesTo(IConnectedExpensesViewModel vm, ViewExpensesInfo exp)
         {
-            vm.NotifyAboutExpenses(exp);
+            if (vm != null)
+            {
+                vm.NotifyAboutExpenses(exp);
+            }
         }
     }
 }

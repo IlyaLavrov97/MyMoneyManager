@@ -8,12 +8,13 @@
              xmlns:models="clr-namespace:MyMoneyManager.Model.Expenses"
              xmlns:myclasses="clr-namespace:MyMoneyManager.ViewModel.ClassesForVM"
              xmlns:viewmodels="clr-namespace:MyMoneyManager.ViewModel"
+             xmlns:workers="clr-namespace:MyMoneyManager.Workers"
              d:DesignHeight="700"
              d:DesignWidth="1000"
              mc:Ignorable="d">
 
     <UserControl.DataContext>
-        <viewmodels:ExpensesControllerViewModel/>
+        <viewmodels:ExpensesControllerViewModel />
     </UserControl.DataContext>
 
     <UserControl.Resources>
@@ -21,17 +22,17 @@
                                              FalseValue="Hidden"
                                              TrueValue="Visible" />
 
-        <ObjectDataProvider x:Key="enumValues"
+        <ObjectDataProvider x:Key="ExchangeRate"
                             MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="viewmodels:ExchangeRateEnum" />
+                <x:Type TypeName="workers:ExchangeRateEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
         <ObjectDataProvider x:Key="ExpensesTypeEnum"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
+                            MethodName="GetValuesAndDescriptions"
+                            ObjectType="workers:EnumWorker">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="models:ExpensesType" />
             </ObjectDataProvider.MethodParameters>
@@ -40,7 +41,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="70" />
             <RowDefinition Height="*" />
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
@@ -51,22 +52,55 @@
         <CheckBox x:Name="checkBox"
                   Width="207"
                   Height="16"
-                  Margin="10,0,0,17"
+                  Margin="10,10,0,0"
                   HorizontalAlignment="Left"
-                  VerticalAlignment="Bottom"
+                  VerticalAlignment="Top"
                   Content="Учитывать период при поиске"
                   IsChecked="{Binding Path=IsDateConsider,
-                                      Mode=TwoWay}" />
+                                      Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged}" />
+        <ComboBox x:Name="comboBox"
+                  Width="130"
+                  Margin="87,0,0,10"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Bottom"
+                  DisplayMemberPath="Description"
+                  ItemsSource="{Binding Source={StaticResource ExpensesTypeEnum}}"
+                  SelectedValue="{Binding Path=SelectedExpensesType,
+                                          Mode=TwoWay}"
+                  SelectedValuePath="Value" 
+                  Text="Any"/>
+
+        <TextBlock x:Name="typeTB"
+                   Margin="10,0,0,17"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Text="Тип затраты :"
+                   TextWrapping="Wrap" />
         <TabControl x:Name="chartTabControl"
                     Grid.RowSpan="2"
                     Grid.Column="1"
                     Margin="10,10,10,80"
                     TabStripPlacement="Top">
-            <TabItem Header="TabItem">
-                <Grid Background="#FF494949" />
+            <TabItem Header="Линейная диаграмма"
+                     IsSelected="{Binding Path=IsLineChartConsider,
+                                          Mode=TwoWay,
+                                          UpdateSourceTrigger=PropertyChanged}"
+                     Visibility="{Binding Path=IsLineChartConsider,
+                                          Converter={StaticResource BoolToHiddenConverter}}">
+                <Grid Background="#FF494949">
+                    <local:LineChartView />
+                </Grid>
             </TabItem>
-            <TabItem Header="TabItem">
-                <Grid Background="#FF494949" />
+            <TabItem Header="Круговая диаграмма"
+                     IsSelected="{Binding Path=IsPieChartConsider,
+                                          Mode=TwoWay,
+                                          UpdateSourceTrigger=PropertyChanged}"
+                     Visibility="{Binding Path=IsPieChartConsider,
+                                          Converter={StaticResource BoolToHiddenConverter}}">
+                <Grid Background="#FF494949">
+                    <local:PieChartView />
+                </Grid>
             </TabItem>
             <TabItem Header="{Binding Path=TabItemName,
                                       Mode=TwoWay}"
@@ -83,7 +117,7 @@
                  Grid.Row="0"
                  Grid.Column="0"
                  Height="Auto"
-                 Margin="222,10,16,10"
+                 Margin="222,20,16,20"
                  Text="{Binding Path=SearchStringContent,
                                 Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}"
@@ -104,6 +138,7 @@
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Text="{Binding Path=ExpensesDiap1,
+                                Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}"
                  TextWrapping="Wrap" />
         <TextBox x:Name="diap2TextBox"
@@ -114,6 +149,7 @@
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Text="{Binding Path=ExpensesDiap2,
+                                Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}"
                  TextWrapping="Wrap" />
         <TextBlock x:Name="info2TextBlock"
@@ -131,7 +167,7 @@
                   Margin="282,0,0,9"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Bottom"
-                  ItemsSource="{Binding Source={StaticResource enumValues}}"
+                  ItemsSource="{Binding Source={StaticResource ExchangeRate}}"
                   SelectedValue="{Binding Path=SelectedExchangeRate,
                                           Mode=TwoWay}"
                   Text="{Binding Path=SelectedExchangeRate,
@@ -156,14 +192,15 @@
 
                         <DataGridTextColumn Width="0.2*"
                                             Binding="{Binding Expenditure}"
-                                            Header="Затрата" />
+                                            Header="Размер" />
 
                         <DataGridTextColumn Width="0.4*"
                                             Binding="{Binding ExpensesType}"
                                             Header="Тип затраты" />
 
                         <DataGridTextColumn Width="0.3*"
-                                            Binding="{Binding СostsDate}"
+                                            Binding="{Binding CostsDate,
+                                                              UpdateSourceTrigger=PropertyChanged}"
                                             Header="Дата" />
 
                         <DataGridTextColumn Width="0.3*"
@@ -212,6 +249,30 @@
                    VerticalAlignment="Bottom"
                    Text="Конец периода"
                    TextWrapping="Wrap" />
+        <CheckBox x:Name="checkBox1"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  Width="169"
+                  Height="16"
+                  Margin="0,0,10,48"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Content="Линейная диаграмма"
+                  IsChecked="{Binding Path=IsLineChartConsider,
+                                      Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged}" />
+        <CheckBox x:Name="checkBox2"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  Width="169"
+                  Height="16"
+                  Margin="0,0,10,14"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Bottom"
+                  Content="Круговая диаграмма"
+                  IsChecked="{Binding Path=IsPieChartConsider,
+                                      Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged}" />
         <Button x:Name="changeBut"
                 Grid.Row="2"
                 Width="89"

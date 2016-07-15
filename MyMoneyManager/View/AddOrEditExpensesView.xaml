@@ -8,6 +8,7 @@
              xmlns:models="clr-namespace:MyMoneyManager.Model.Expenses"
              xmlns:myclasses="clr-namespace:MyMoneyManager.ViewModel.ClassesForVM"
              xmlns:viewmodels="clr-namespace:MyMoneyManager.ViewModel"
+             xmlns:workers="clr-namespace:MyMoneyManager.Workers"
              d:DesignHeight="300"
              d:DesignWidth="400"
              mc:Ignorable="d">
@@ -18,8 +19,8 @@
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ExpensesTypeEnum"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
+                            MethodName="GetValuesAndDescriptionsWithoutZeroElement"
+                            ObjectType="workers:EnumWorker">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="models:ExpensesType" />
             </ObjectDataProvider.MethodParameters>
@@ -55,12 +56,11 @@
                   Height="32"
                   Margin="87,90,94,0"
                   VerticalAlignment="Top"
+                  DisplayMemberPath="Description"
                   ItemsSource="{Binding Source={StaticResource ExpensesTypeEnum}}"
-                  SelectedItem="{Binding Path=NewExpensesType,
-                                         Mode=TwoWay,
-                                         UpdateSourceTrigger=PropertyChanged}"
-                  Text="{Binding Path=NewExpensesType,
-                                 Mode=TwoWay}" />
+                  SelectedValue="{Binding Path=NewExpensesType,
+                                         Mode=TwoWay}"
+                  SelectedValuePath="Value" />
         <DatePicker Height="32"
                     Margin="87,140,94,0"
                     VerticalAlignment="Top"

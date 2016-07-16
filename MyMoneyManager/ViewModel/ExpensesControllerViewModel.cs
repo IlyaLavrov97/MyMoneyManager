@@ -388,10 +388,6 @@ namespace MyMoneyManager.ViewModel
             {
                 MyObjectsConverter.ConvertBOtoVO(item, out VO);
                 ViewExpensesInfo newObj = (ViewExpensesInfo)VO;
-                if (SelectedExchangeRate != null)
-                {
-                    newObj.Expenditure = Math.Round(newObj.Expenditure / MoneyWorker.GetExchangeRateValue((ExchangeRateEnum)Enum.Parse(typeof(ExchangeRateEnum), SelectedExchangeRate)), 2);
-                }
                 ExpensesInfos.Add(newObj);
                 listOfViewObj.Add(newObj.Clone());
             }
@@ -411,8 +407,9 @@ namespace MyMoneyManager.ViewModel
 
         private void DeleteExpenses()
         {
-            var deleteItem = ExpensesInfos.FirstOrDefault(exp => exp.Id == SelectedExpensesInfo.Id);
-            ExpensesInfos.Remove(deleteItem);
+            var deleteItem = listOfViewObj.FirstOrDefault(exp => exp.Id == SelectedExpensesInfo.Id);
+            listOfViewObj.Remove(deleteItem);
+            ExpensesInfos.Remove(SelectedExpensesInfo);
             IMoneyElement newBO;
             MyObjectsConverter.ConvertVOtoBO(deleteItem, out newBO);
             JsonWorker.DeleteElement(newBO);
@@ -516,16 +513,11 @@ namespace MyMoneyManager.ViewModel
 
         private void ChartContextChanged()
         {
-            var coll = JsonWorker.GetElementsFrom(typeof(ExpensesInfo));
-
             List<ViewExpensesInfo> orderedColl = new List<ViewExpensesInfo>();
 
-            IViewElement VO;
-            foreach (var item in coll)
+            foreach (var item in listOfViewObj)
             {
-                MyObjectsConverter.ConvertBOtoVO(item, out VO);
-                ViewExpensesInfo newObj = (ViewExpensesInfo)VO;
-                orderedColl.Add(newObj);
+                orderedColl.Add(item.Clone());
             }
 
             orderedColl = orderedColl.Where(exp => (DateTime.Compare(DateTime.Parse(exp.CostsDate), FromExpensesDate) >= 0)
@@ -541,7 +533,9 @@ namespace MyMoneyManager.ViewModel
             SendExpenses(VVM.LineChart, null);
             SendExpenses(VVM.PieChart, null);
         }
+
         
+
         public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
         {
             VVM.SendExpensesTo(to, message);
@@ -551,17 +545,24 @@ namespace MyMoneyManager.ViewModel
         {
             if (message != null)
             {
+                message.ExpensesType = EnumWorker.GetDescriptionFromValue(message.ExpensesType);
                 if (TabItemName == "Редактирование расхода")
                 {
                     ExpensesInfos.Add(message);
+                    listOfViewObj.Add(message);
+                    var deleteItem = listOfViewObj.FirstOrDefault(exp => exp.Id == SelectedExpensesInfo.Id);
+                    listOfViewObj.Remove(deleteItem);
                     ExpensesInfos.Remove(SelectedExpensesInfo);
                     SelectedExpensesInfo = message;
+                    SetMaxExpensesValue();
                     TabVisibility = false;
                     DisplayXamlTab = false;
                 }
                 else
                 {
                     ExpensesInfos.Add(message);
+                    listOfViewObj.Add(message);
+                    SetMaxExpensesValue();
                     TabVisibility = false;
                     DisplayXamlTab = false;
                 }

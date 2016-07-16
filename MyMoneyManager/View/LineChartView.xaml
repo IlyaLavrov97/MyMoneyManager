@@ -15,23 +15,7 @@
     </UserControl.DataContext>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="5">
-            <Bold>Basic Example</Bold>: A chart using default configuration.
-        </TextBlock>
-        <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <TextBlock VerticalAlignment="Center">Points</TextBlock>
-            <Button Margin="5" Command="{Binding RemovePointsOnClickCommand}">-</Button>
-            <Button Margin="5" Command="{Binding AddPointsOnClickCommand}">+</Button>
-            <TextBlock VerticalAlignment="Center">Series</TextBlock>
-            <Button Margin="5" Command="{Binding RemoveSeriesOnClickCommand}">-</Button>
-            <Button Margin="5" Command ="{Binding AddSeriesOnClickCommand}">+</Button>
-            <Button Margin="5" Command="{Binding TestOnClickCommand}">Reset</Button>
-        </StackPanel>
+       
         <lvc:LineChart Name="Chart" Grid.Row="2" LegendLocation="Right"
                        Series="{Binding Series}" DisableAnimations="False">
             <lvc:LineChart.AxisY>
@@ -41,9 +25,6 @@
             <lvc:LineChart.AxisX>
                 <lvc:Axis Title="Month"
                           Labels="{Binding Path = AxisX}">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator Color="Black"></lvc:Separator>
-                    </lvc:Axis.Separator>
                 </lvc:Axis>
             </lvc:LineChart.AxisX>
         </lvc:LineChart>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using MyMoneyManager.Workers;
 
 namespace MyMoneyManager.Model.Expenses.BusinessObject
 {
@@ -73,12 +74,7 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
 
         public void ConvertToVO(out IViewElement newVO)
         {
-            newVO = new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), ExpensesType.GetType()
-                                                    .GetMember(ExpensesType.ToString())[0]
-                                                    .GetCustomAttributes(true)
-                                                    .OfType<DescriptionAttribute>()
-                                                    .First()
-                                                    .Description);
+            newVO = new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), EnumWorker.GetDescriptionFromValue(ExpensesType.ToString()));
         }
 
         public Guid GetId()

@@ -6,8 +6,8 @@
              xmlns:lvc="clr-namespace:LiveCharts;assembly=LiveCharts"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodels="clr-namespace:MyMoneyManager.ViewModel"
-             d:DesignHeight="300"
-             d:DesignWidth="300"
+             d:DesignHeight="500"
+             d:DesignWidth="500"
              mc:Ignorable="d">
 
     <UserControl.DataContext>
@@ -15,13 +15,9 @@
     </UserControl.DataContext>
 
     <Grid>
-        <lvc:PieChart Name="Chart" LegendLocation="Left" Series="{Binding Path=Series}">
-            <lvc:PieChart.AxisY>
-                <lvc:Axis Title="Sold Items" />
-            </lvc:PieChart.AxisY>
-            <lvc:PieChart.AxisX>
-                <lvc:Axis Title="Month" Labels="Jan, Feb , Mar, Apr, May, Jun" />
-            </lvc:PieChart.AxisX>
+        <lvc:PieChart Name="Chart" LegendLocation="Bottom" Series="{Binding Path=Series}">
+            
+          
         </lvc:PieChart>
     </Grid>
 </UserControl>

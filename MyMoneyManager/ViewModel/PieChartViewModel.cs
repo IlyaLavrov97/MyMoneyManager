@@ -69,7 +69,8 @@ namespace MyMoneyManager.ViewModel
                 {
                     Series.Add(new PieSeries {
                         Values = new ChartValues<double> { expForSer.Value },
-                        Title = expForSer.Key
+                        Title = expForSer.Key,
+                        DataLabels = true
                     });
                 }
 

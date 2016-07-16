@@ -99,23 +99,13 @@ namespace MyMoneyManager.ViewModel
         {
                 if (NewExpensesId != Guid.Empty)
                 {
-                    ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesId, NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.GetType()
-                                                    .GetMember(NewExpensesType.ToString())[0]
-                                                    .GetCustomAttributes(true)
-                                                    .OfType<DescriptionAttribute>()
-                                                    .First()
-                                                    .Description);
+                    ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesId, NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.ToString());
                     JsonWorker.DeleteElement(oldMoneyElement);
                     SendExpenses(VVM.ExpensesController,exp);
                 }
                 else
                 {
-                    ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.GetType()
-                                                    .GetMember(NewExpensesType.ToString())[0]
-                                                    .GetCustomAttributes(true)
-                                                    .OfType<DescriptionAttribute>()
-                                                    .First()
-                                                    .Description);
+                    ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.ToString());
                     SendExpenses(VVM.ExpensesController,exp);
                     
                 }
@@ -167,14 +157,14 @@ namespace MyMoneyManager.ViewModel
 
         public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
         {
-            VVM.SendExpensesTo(to, message);
-            
             if (message != null)
             {
                 MyObjectsConverter.ConvertVOtoBO(message, out newMoneyElement);
                 JsonWorker.AddElement(newMoneyElement);
             }
-            
+
+            VVM.SendExpensesTo(to, message);
+
             Reset();
         }
 
@@ -182,11 +172,12 @@ namespace MyMoneyManager.ViewModel
         {
             NewExpensesId = message.Id;
             NewExpensesValue = message.Expenditure;
-            NewExpensesType = (ExpensesType)Enum.Parse(typeof(ExpensesType), message.ExpensesType);
+            NewExpensesType = EnumWorker.GetValueFromDescription(message.ExpensesType);
             NewExpensesDate = DateTime.Parse(message.CostsDate);
             NewExpensesComment = message.Comment;
             MyObjectsConverter.ConvertVOtoBO(message, out oldMoneyElement);
         }
+        
 
         ///<summary>
         /// Get or set SaveCommand

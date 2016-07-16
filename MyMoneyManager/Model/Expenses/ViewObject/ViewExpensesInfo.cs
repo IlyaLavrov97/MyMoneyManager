@@ -1,4 +1,5 @@
 ﻿using MyMoneyManager.Model.Expenses.BusinessObject;
+using MyMoneyManager.Workers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace MyMoneyManager.Model.Expenses.ViewObject
 
         public void ConvertToBO(out IMoneyElement newBO)
         {
-            newBO = new ExpensesInfo(Id,Expenditure, Comment, DateTime.Parse(CostsDate), (ExpensesType)Enum.Parse(typeof(ExpensesType), ExpensesType));
+            newBO = new ExpensesInfo(Id,Expenditure, Comment, DateTime.Parse(CostsDate), (ExpensesType)Enum.Parse(typeof(ExpensesType), EnumWorker.GetValueFromDescription(ExpensesType) == 0 ? ExpensesType : EnumWorker.GetValueFromDescription(ExpensesType).ToString()));
         }
 
         public Guid GetId()

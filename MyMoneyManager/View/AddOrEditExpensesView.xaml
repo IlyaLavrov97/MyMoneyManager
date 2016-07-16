@@ -27,77 +27,80 @@
         </ObjectDataProvider>
     </UserControl.Resources>
     <Grid Background="#FF494949">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="75*"/>
+        </Grid.RowDefinitions>
         <Button x:Name="saveElButton"
                 Width="100"
                 Height="25"
-                Margin="0,0,130,10"
+                Margin="0,0,115,10"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Command="{Binding Path=SaveCommand,
                                   Mode=TwoWay}"
-                Content="Сохранить" />
+                Content="Сохранить" Grid.Row="4" />
         <TextBox x:Name="summTextBox"
                  Height="32"
-                 Margin="55,40,94,0"
-                 VerticalAlignment="Top"
+                 Margin="55,0,94,7"
                  Text="{Binding Path=NewExpensesValue,
                                 Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" VerticalAlignment="Bottom" />
         <TextBox x:Name="newCommentTextBox"
                  Height="32"
-                 Margin="96,190,94,0"
-                 VerticalAlignment="Top"
+                 Margin="96,0,94,13"
                  Text="{Binding Path=NewExpensesComment,
                                 Mode=TwoWay,
                                 UpdateSourceTrigger=PropertyChanged}"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" Grid.Row="3" VerticalAlignment="Bottom" />
         <ComboBox x:Name="newTypeComboBox"
                   Height="32"
-                  Margin="87,90,94,0"
-                  VerticalAlignment="Top"
+                  Margin="87,0,94,11"
                   DisplayMemberPath="Description"
                   ItemsSource="{Binding Source={StaticResource ExpensesTypeEnum}}"
                   SelectedValue="{Binding Path=NewExpensesType,
                                          Mode=TwoWay}"
-                  SelectedValuePath="Value" />
-        <DatePicker Height="32"
-                    Margin="87,140,94,0"
-                    VerticalAlignment="Top"
+                  SelectedValuePath="Value" Grid.Row="1" VerticalAlignment="Bottom" />
+        <DatePicker
+                    Margin="87,0,94,10"
                     SelectedDate="{Binding Path=NewExpensesDate,
-                                           Mode=TwoWay}" />
+                                           Mode=TwoWay}" Grid.Row="2" Height="32" VerticalAlignment="Bottom" />
         <TextBlock x:Name="textBlock"
                    Width="40"
                    Height="16"
-                   Margin="10,48,0,0"
+                   Margin="10,0,0,17"
                    HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
+                   VerticalAlignment="Bottom"
                    Text="Сумма"
                    TextWrapping="Wrap" />
         <TextBlock x:Name="textBlock_Copy1"
                    Width="72"
                    Height="16"
-                   Margin="10,98,0,0"
+                   Margin="10,0,0,19"
                    HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
+                   VerticalAlignment="Bottom"
                    Text="Тип затраты"
-                   TextWrapping="Wrap" />
+                   TextWrapping="Wrap" Grid.Row="1" />
         <TextBlock x:Name="textBlock_Copy2"
                    Width="72"
                    Height="16"
-                   Margin="10,148,0,0"
+                   Margin="10,0,0,18"
                    HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
+                   VerticalAlignment="Bottom"
                    Text="Дата затраты"
-                   TextWrapping="Wrap" />
+                   TextWrapping="Wrap" Grid.Row="2" />
         <TextBlock x:Name="textBlock_Copy3"
                    Width="81"
                    Height="16"
-                   Margin="10,198,0,0"
+                   Margin="10,0,0,22"
                    HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
+                   VerticalAlignment="Bottom"
                    Text="Комментарий"
-                   TextWrapping="Wrap" />
+                   TextWrapping="Wrap" Grid.Row="3" />
         <Button x:Name="cancelButton"
                 Width="100"
                 Height="25"
@@ -106,7 +109,7 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding Path=CancelCommand,
                                   Mode=TwoWay}"
-                Content="Отменить" />
+                Content="Отменить" Grid.Row="4" />
 
     </Grid>
 </UserControl>

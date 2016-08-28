@@ -5,89 +5,94 @@ using System.Collections.Generic;
 using System.Linq;
 using MyMoneyManager.Model;
 using MyMoneyManager.Model.Expenses.BusinessObject;
+using System.Data.SqlClient;
+using MyMoneyManager.Properties;
 
 namespace MyMoneyManager.Workers
 {
-    public class JsonWorker
+    public class JsonWorker<T> where T : class, IBusinessObject
     {
+        private List<T> listOfBusinessObject;
+        private readonly DatabaseSynchronizer<T> _databaseSyncronizer = new DatabaseSynchronizer<T>();
 
-        private static List<ExpensesInfo> ExpensesInfosList;
-        
-        public static void AddElement(IMoneyElement moneyElement)
+        public void AddElement(T businessObject)
         {
-            if (typeof(ExpensesInfo) == moneyElement.GetType())
+            if (listOfBusinessObject == null)
             {
-                if (ExpensesInfosList == null)
-                {
-                    Pull(moneyElement.GetType());
-                }
-                ExpensesInfosList.Add((ExpensesInfo)moneyElement);
+                GetJsonObjects();
             }
-
-            Push(moneyElement.GetType());
+            listOfBusinessObject.Add(businessObject);
+            Push();
         }
 
-        public static void DeleteElement(IMoneyElement moneyElement)
+        public void DeleteElement(T businessObject)
         {
-            Pull(moneyElement.GetType());
-            if (moneyElement.GetType() == typeof(ExpensesInfo))
+            if (listOfBusinessObject == null)
             {
-                var removingElement = ExpensesInfosList.SingleOrDefault(el => el.Id == moneyElement.GetId());
-                ExpensesInfosList.Remove(removingElement);
+                GetJsonObjects();
             }
-            Push(moneyElement.GetType());
+            var removingElement = listOfBusinessObject.SingleOrDefault(el => el.GetId() == businessObject.GetId());
+            listOfBusinessObject.Remove(removingElement);
+            Push();
         }
 
-        public static List<IMoneyElement> GetElementsFrom(Type t)
+        public List<T> GetElements()
         {
-            if (ExpensesInfosList == null)
+            if (listOfBusinessObject == null)
             {
-                Pull(t);
+                Pull();
             }
-
-            List<IMoneyElement> ValueList = new List<IMoneyElement>();
-
-            if (t == typeof(ExpensesInfo))
-            {
-                ValueList.AddRange(ExpensesInfosList);
-                return ValueList;
-            }
-
+            List<T> ValueList = new List<T>();
+            ValueList.AddRange(listOfBusinessObject);
             return ValueList;
         }
 
-        public static void SynchronizeWithDB()
+        private void Pull()
         {
-
-        } 
-
-        private static void Pull(Type type)
-        {
-            if (File.Exists(string.Format(@"MoneyElements(" + type.Name + ").json")))
+            listOfBusinessObject = _databaseSyncronizer.GetReliableObjectsFromDB();
+            if (listOfBusinessObject.Count == 0)
             {
-                using (StreamReader file = File.OpenText(string.Format(@"MoneyElements(" + type.Name + ").json")))
+                GetJsonObjects();
+                // TODO: Оповещение о неподключенной БД.
+            }
+            else
+            {
+                // TODO: Оповещение о добавленных, удаленных и измененных элементах, если таковые имеются.
+            }
+        }
+
+        public void SynchronizeWithDB(byte currency = 0)
+        {
+            GetJsonObjects();
+            if(!_databaseSyncronizer.SynchronizeWithDB(listOfBusinessObject, currency))
+            {
+                // TODO: Оповещение о неподключенной БД.
+            }
+        }
+
+        private void GetJsonObjects()
+        {
+            if (File.Exists(string.Format(@"BusinessObject(" + typeof(T).Name + ").json")))
+            {
+                using (StreamReader file = File.OpenText(string.Format(@"BusinessObject(" + typeof(T).Name + ").json")))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    ExpensesInfosList = (List<ExpensesInfo>)serializer.Deserialize(file, typeof(List<ExpensesInfo>));
+                    listOfBusinessObject = (List<T>)serializer.Deserialize(file, typeof(List<T>));
                 }
             }
             else
             {
-                 ExpensesInfosList = new List<ExpensesInfo>();
+                listOfBusinessObject = new List<T>();
             }
         }
 
-        private static void Push(Type type)
+        private void Push()
         {
-            if (type == typeof(ExpensesInfo))
+            using (StreamWriter file = File.CreateText(string.Format(@"BusinessObject(" + typeof(T).Name + ").json")))
             {
-                using (StreamWriter file = File.CreateText(string.Format(@"MoneyElements(" + type.Name + ").json")))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Serialize(file, ExpensesInfosList);
-                }
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, listOfBusinessObject);
             }
         }
-
     }
 }

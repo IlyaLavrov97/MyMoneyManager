@@ -8,12 +8,13 @@ using MyMoneyManager.ViewModel.ClassesForVM;
 using System.Windows.Input;
 using MyMoneyManager.ViewModel.ClassesForVM.Mediator;
 using MyMoneyManager.Model.Expenses.ViewObject;
+using MyMoneyManager.Model;
+using MyMoneyManager.Workers;
 
 namespace MyMoneyManager.ViewModel
 {
     public class LineChartViewModel : ViewModelBase,
-        IConnectedExpensesViewModel
-        
+        IConnectedViewModel
     {
         private SeriesCollection series = new SeriesCollection();
 
@@ -27,16 +28,7 @@ namespace MyMoneyManager.ViewModel
             }
         }
 
-        private List<ViewExpensesInfo> newExpensesInfos = new List<ViewExpensesInfo>();
-
-        public List<ViewExpensesInfo> NewExpensesInfos
-        {
-            get { return newExpensesInfos; }
-            set
-            {
-                newExpensesInfos = value;
-            }
-        }
+        private Dictionary<string, List<IViewElement>> dictionary = new Dictionary<string, List<IViewElement>>();
 
         private List<string> axisX = new List<string>();
 
@@ -50,123 +42,77 @@ namespace MyMoneyManager.ViewModel
             }
         }
 
-        private LineSeries ExpensesSeries = new LineSeries
-        {
-            Title = "Расходы",
-            Values = new ChartValues<double>()
-        };
-
         MediatorForVM VVM;
 
         public LineChartViewModel()
         {
             Init();
-            RemovePointsOnClickCommand = new RelayCommand(arg => RemovePointsOnClick(), x => True());
-            AddPointsOnClickCommand = new RelayCommand(arg => AddPointsOnClick(), x => True());
-            RemoveSeriesOnClickCommand = new RelayCommand(arg => RemoveSeriesOnClick(), x => True());
-            AddSeriesOnClickCommand = new RelayCommand(arg => AddSeriesOnClick(), x => True());
-            TestOnClickCommand = new RelayCommand(arg => TestOnClick(), x => True());
         }
 
         private void Init()
         {
-            Series.Add(ExpensesSeries);
             VVM = MediatorForVM.Instance;
             VVM.LineChart = this;
         }
+        
 
-        private bool True()
-        {
-            return true;
-        }
-
-        private void RemovePointsOnClick()
-        {
-            //Remove any point from any series and chart will update
-            foreach (var series in Series)
-            {
-                if (series.Values.Count > 0) series.Values.RemoveAt(0);
-            }
-        }
-
-        private void AddPointsOnClick()
-        {
-            //Add a point to any series, and chart will update
-            var r = new Random();
-
-            foreach (var series in Series)
-            {
-                series.Values.Add((double)r.Next(0, 15));
-            }
-        }
-
-        private void RemoveSeriesOnClick()
-        {
-            //Remove any series
-            if (Series.Count > 0) Series.RemoveAt(0);
-        }
-
-        private void AddSeriesOnClick()
-        {
-            //Ad any series to your chart
-            var someRandomValues = new ChartValues<double>();
-
-            var r = new Random();
-            var count = Series.Count > 0 ? Series[0].Values.Count : 5;
-
-            for (int i = 0; i < count; i++)
-            {
-                someRandomValues.Add(r.Next(0, 15));
-            }
-
-            var someNewSeries = new LineSeries
-            {
-                Title = "Some Random Series",
-                Values = someRandomValues,
-                PointRadius = 0
-            };
-
-            Series.Add(someNewSeries);
-        }
-
-        private void TestOnClick()
-        {
-            Series.Clear();
-        }
-
-        public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
+        public void SendExpenses(IConnectedViewModel to, IViewElement message)
         {
             throw new NotImplementedException();
         }
 
-        public void NotifyAboutExpenses(ViewExpensesInfo message)
+        public void NotifyAboutExpenses(IViewElement message)
         {
-            if (message != null)
+            bool isNewSeries = true;
+            LineSeries oldSerries = new LineSeries();
+            foreach (var item in Series)
             {
-                ExpensesSeries.Values.Clear();
+                if (item.Title == message.GetType().Name)
+                {
+                    isNewSeries = false;
+                    oldSerries = (LineSeries)item;
+                    break;
+                }
+            }
 
-                NewExpensesInfos.Add(message);
+            if (isNewSeries)
+            {
+                Series.Add(new LineSeries
+                {
+                    Title = message.GetType().Name,
+                    Values = new ChartValues<double>()
+                });
+                List<IViewElement> newColl = new List<IViewElement>();
+                newColl.Add(message);
+                dictionary.Add(message.GetType().Name, newColl);
             }
             else
             {
-                foreach (var value in NewExpensesInfos)
+                oldSerries.Values.Clear();
+                List<IViewElement> oldColl = dictionary[message.GetType().Name];
+                oldColl.Add(message);
+                dictionary[message.GetType().Name] = oldColl;
+            }
+
+
+            if (ChartWorker.isLastObjForChart == true)
+            {
+                foreach (var item in Series)
                 {
-                    ExpensesSeries.Values.Add(value.Expenditure);
-                    AxisX.Add(value.CostsDate);
+                    if (item.Title == message.GetType().Name)
+                    {
+                        oldSerries = (LineSeries)item;
+                        break;
+                    }
+                }
+                foreach (var value in dictionary[message.GetType().Name])
+                {
+                    oldSerries.Values.Add(value.GetMoneyAmount());
+                    AxisX.Add(value.GetOperationDate());
                 }
 
-                NewExpensesInfos.Clear();
+                dictionary[message.GetType().Name].Clear();
             }
         }
-
-        public ICommand RemovePointsOnClickCommand { get; set; }
-
-        public ICommand AddPointsOnClickCommand { get; set; }
-
-        public ICommand RemoveSeriesOnClickCommand { get; set; }
-
-        public ICommand AddSeriesOnClickCommand { get; set; }
-
-        public ICommand TestOnClickCommand { get; set; }
     }
 }

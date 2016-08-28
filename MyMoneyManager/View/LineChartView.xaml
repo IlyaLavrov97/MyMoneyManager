@@ -15,17 +15,19 @@
     </UserControl.DataContext>
 
     <Grid>
-       
-        <lvc:LineChart Name="Chart" Grid.Row="2" LegendLocation="Right"
-                       Series="{Binding Series}" DisableAnimations="False">
+
+        <lvc:LineChart Name="Chart"
+                       Grid.Row="2"
+                       DisableAnimations="False"
+                       LegendLocation="Right"
+                       Series="{Binding Series}">
             <lvc:LineChart.AxisY>
-                <lvc:Axis Title="Sold Items" Position="LeftBottom" IsMerged="False">
-                </lvc:Axis>
+                <lvc:Axis Title="Sold Items"
+                          IsMerged="False"
+                          Position="LeftBottom" />
             </lvc:LineChart.AxisY>
             <lvc:LineChart.AxisX>
-                <lvc:Axis Title="Month"
-                          Labels="{Binding Path = AxisX}">
-                </lvc:Axis>
+                <lvc:Axis Title="Month" Labels="{Binding Path=AxisX}" />
             </lvc:LineChart.AxisX>
         </lvc:LineChart>
     </Grid>

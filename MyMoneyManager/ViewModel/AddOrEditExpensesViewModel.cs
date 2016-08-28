@@ -18,7 +18,7 @@ using System.ComponentModel;
 namespace MyMoneyManager.ViewModel
 {
     public class AddOrEditExpensesViewModel : ViewModelBase,
-        IConnectedExpensesViewModel
+        IConnectedViewModel
     {
 
         private double newExpensesValue;
@@ -83,14 +83,14 @@ namespace MyMoneyManager.ViewModel
 
         MediatorForVM VVM;
 
-        private IMoneyElement oldMoneyElement;
-        private IMoneyElement newMoneyElement;
+        private ExpensesInfo oldMoneyElement;
+
+        private readonly JsonWorker<ExpensesInfo> _jsonWorker;
 
         public AddOrEditExpensesViewModel()
         {
+            _jsonWorker = new JsonWorker<ExpensesInfo>();
             Init();
-            SaveCommand = new RelayCommand(arg => SaveExpenses(), x => CanSave());
-            CancelCommand = new RelayCommand(arg => Cancel(), x => CanCancel());
         }
 
         #region SaveExpenses
@@ -100,7 +100,7 @@ namespace MyMoneyManager.ViewModel
                 if (NewExpensesId != Guid.Empty)
                 {
                     ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesId, NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.ToString());
-                    JsonWorker.DeleteElement(oldMoneyElement);
+                    _jsonWorker.DeleteElement(oldMoneyElement);
                     SendExpenses(VVM.ExpensesController,exp);
                 }
                 else
@@ -137,6 +137,8 @@ namespace MyMoneyManager.ViewModel
 
         private void Init()
         {
+            SaveCommand = new RelayCommand(arg => SaveExpenses(), x => CanSave());
+            CancelCommand = new RelayCommand(arg => Cancel(), x => CanCancel());
             VVM = MediatorForVM.Instance;
             VVM.AddOrEditExpenses = this;
             if (NewExpensesDate == DateTime.MinValue || NewExpensesDate == null)
@@ -155,12 +157,11 @@ namespace MyMoneyManager.ViewModel
             NewExpensesValue = 0;
         }
 
-        public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
+        public void SendExpenses(IConnectedViewModel to, IViewElement message)
         {
             if (message != null)
             {
-                MyObjectsConverter.ConvertVOtoBO(message, out newMoneyElement);
-                JsonWorker.AddElement(newMoneyElement);
+                _jsonWorker.AddElement((ExpensesInfo)message.ConvertToBO());
             }
 
             VVM.SendExpensesTo(to, message);
@@ -168,14 +169,15 @@ namespace MyMoneyManager.ViewModel
             Reset();
         }
 
-        public void NotifyAboutExpenses(ViewExpensesInfo message)
+        public void NotifyAboutExpenses(IViewElement message)
         {
-            NewExpensesId = message.Id;
-            NewExpensesValue = message.Expenditure;
-            NewExpensesType = EnumWorker.GetValueFromDescription(message.ExpensesType);
-            NewExpensesDate = DateTime.Parse(message.CostsDate);
-            NewExpensesComment = message.Comment;
-            MyObjectsConverter.ConvertVOtoBO(message, out oldMoneyElement);
+            ViewExpensesInfo expensesInfo = (ViewExpensesInfo)message;
+            NewExpensesId = expensesInfo.Id;
+            NewExpensesValue = expensesInfo.Expenditure;
+            NewExpensesType = EnumWorker.GetValueFromDescription(expensesInfo.ExpensesType);
+            NewExpensesDate = DateTime.Parse(expensesInfo.CostsDate);
+            NewExpensesComment = expensesInfo.Comment;
+            oldMoneyElement = (ExpensesInfo)message.ConvertToBO();
         }
         
 

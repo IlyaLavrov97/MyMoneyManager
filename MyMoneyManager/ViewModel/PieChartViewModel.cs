@@ -8,11 +8,12 @@ using MyMoneyManager.ViewModel.ClassesForVM;
 using System.Windows.Input;
 using MyMoneyManager.ViewModel.ClassesForVM.Mediator;
 using MyMoneyManager.Model.Expenses.ViewObject;
+using MyMoneyManager.Model;
 
 namespace MyMoneyManager.ViewModel
 {
     public class PieChartViewModel: ViewModelBase,
-        IConnectedExpensesViewModel
+        IConnectedViewModel
     {
         private SeriesCollection series = new SeriesCollection();
 
@@ -41,41 +42,41 @@ namespace MyMoneyManager.ViewModel
             VVM.PieChart = this;
         }
 
-        public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
+        public void SendExpenses(IConnectedViewModel to, IViewElement message)
         {
             throw new NotImplementedException();
         }
 
-        public void NotifyAboutExpenses(ViewExpensesInfo message)
+        public void NotifyAboutExpenses(IViewElement message)
         {
-            double myValue;
-            if (message != null)
-            {
-                Series.Clear();
+            //double myValue;
+            //if (message != null)
+            //{
+            //    Series.Clear();
 
-                if(expensesForSeries.TryGetValue(message.ExpensesType.ToString(), out myValue))
-                {
-                    myValue = myValue + message.Expenditure;
-                    expensesForSeries[message.ExpensesType.ToString()] = myValue;
-                }
-                else
-                {
-                    expensesForSeries.Add(message.ExpensesType.ToString(), message.Expenditure);
-                }
-            }
-            else
-            {
-                foreach (var expForSer in expensesForSeries.OrderByDescending(item => item.Value))
-                {
-                    Series.Add(new PieSeries {
-                        Values = new ChartValues<double> { expForSer.Value },
-                        Title = expForSer.Key,
-                        DataLabels = true
-                    });
-                }
+            //    if(expensesForSeries.TryGetValue(message.ExpensesType.ToString(), out myValue))
+            //    {
+            //        myValue = myValue + message.Expenditure;
+            //        expensesForSeries[message.ExpensesType.ToString()] = myValue;
+            //    }
+            //    else
+            //    {
+            //        expensesForSeries.Add(message.ExpensesType.ToString(), message.Expenditure);
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var expForSer in expensesForSeries.OrderByDescending(item => item.Value))
+            //    {
+            //        Series.Add(new PieSeries {
+            //            Values = new ChartValues<double> { expForSer.Value },
+            //            Title = expForSer.Key,
+            //            DataLabels = true
+            //        });
+            //    }
 
-                expensesForSeries.Clear();
-            }
+            //    expensesForSeries.Clear();
+            //}
         }
 
 

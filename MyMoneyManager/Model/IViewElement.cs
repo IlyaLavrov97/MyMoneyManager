@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyMoneyManager.Model.ChartInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace MyMoneyManager.Model
 {
-    public interface IViewElement
+    public interface IViewElement : ILineChartPictured
     {
-        void ConvertToBO(out IMoneyElement newBO);
+        IMoneyElement ConvertToBO();
         Guid GetId();
+        IViewElement Clone();
     }
 }

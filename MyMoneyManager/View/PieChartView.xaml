@@ -15,9 +15,8 @@
     </UserControl.DataContext>
 
     <Grid>
-        <lvc:PieChart Name="Chart" LegendLocation="Bottom" Series="{Binding Path=Series}">
-            
-          
-        </lvc:PieChart>
+        <lvc:PieChart Name="Chart"
+                      LegendLocation="Bottom"
+                      Series="{Binding Path=Series}" />
     </Grid>
 </UserControl>

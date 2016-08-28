@@ -1,4 +1,5 @@
-﻿using MyMoneyManager.Model.Expenses.ViewObject;
+﻿using MyMoneyManager.Model;
+using MyMoneyManager.Model.Expenses.ViewObject;
 
 namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
 {
@@ -6,10 +7,10 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
     {
         private static MediatorForVM instance;
 
-        public IConnectedExpensesViewModel ExpensesController;
-        public IConnectedExpensesViewModel AddOrEditExpenses;
-        public IConnectedExpensesViewModel LineChart;
-        public IConnectedExpensesViewModel PieChart;
+        public IConnectedViewModel ExpensesController;
+        public IConnectedViewModel AddOrEditExpenses;
+        public IConnectedViewModel LineChart;
+        public IConnectedViewModel PieChart;
 
         private MediatorForVM() { }
 
@@ -25,7 +26,7 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
             }
         }
 
-        public void SendExpensesTo(IConnectedExpensesViewModel vm, ViewExpensesInfo exp)
+        public void SendExpensesTo(IConnectedViewModel vm, IViewElement exp)
         {
             if (vm != null)
             {

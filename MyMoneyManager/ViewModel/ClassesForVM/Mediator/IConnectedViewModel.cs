@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyMoneyManager.Model.Expenses.ViewObject;
+using MyMoneyManager.Model;
 
 namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
 {
-    public interface IConnectedExpensesViewModel
+    public interface IConnectedViewModel
     {
-        void SendExpenses(IConnectedExpensesViewModel to,  ViewExpensesInfo message);
+        void SendExpenses(IConnectedViewModel to, IViewElement message);
 
-        void NotifyAboutExpenses(ViewExpensesInfo message);
+        void NotifyAboutExpenses(IViewElement message);
     }
 }

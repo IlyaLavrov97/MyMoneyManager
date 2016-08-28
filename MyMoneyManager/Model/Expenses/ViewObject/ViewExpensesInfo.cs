@@ -57,9 +57,9 @@ namespace MyMoneyManager.Model.Expenses.ViewObject
             ExpensesType = expensesType;
         }
 
-        public void ConvertToBO(out IMoneyElement newBO)
+        public IMoneyElement ConvertToBO()
         {
-            newBO = new ExpensesInfo(Id,Expenditure, Comment, DateTime.Parse(CostsDate), (ExpensesType)Enum.Parse(typeof(ExpensesType), EnumWorker.GetValueFromDescription(ExpensesType) == 0 ? ExpensesType : EnumWorker.GetValueFromDescription(ExpensesType).ToString()));
+            return new ExpensesInfo(Id,Expenditure, Comment, DateTime.Parse(CostsDate), (ExpensesType)Enum.Parse(typeof(ExpensesType), EnumWorker.GetValueFromDescription(ExpensesType) == 0 ? ExpensesType : EnumWorker.GetValueFromDescription(ExpensesType).ToString()));
         }
 
         public Guid GetId()
@@ -67,9 +67,19 @@ namespace MyMoneyManager.Model.Expenses.ViewObject
             return Id;
         }
 
-        public ViewExpensesInfo Clone()
+        public IViewElement Clone()
         {
             return new ViewExpensesInfo(Id, Expenditure, Comment, CostsDate, ExpensesType);
+        }
+
+        public double GetMoneyAmount()
+        {
+            return Expenditure;
+        }
+
+        public string GetOperationDate()
+        {
+            return CostsDate;
         }
     }
 }

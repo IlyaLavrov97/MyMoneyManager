@@ -68,8 +68,8 @@
                   ItemsSource="{Binding Source={StaticResource ExpensesTypeEnum}}"
                   SelectedValue="{Binding Path=SelectedExpensesType,
                                           Mode=TwoWay}"
-                  SelectedValuePath="Value" 
-                  Text="Any"/>
+                  SelectedValuePath="Value"
+                  Text="Any" />
 
         <TextBlock x:Name="typeTB"
                    Margin="10,0,0,17"
@@ -296,6 +296,15 @@
                 HorizontalAlignment="Right"
                 Command="{Binding Path=DeleteCommand}"
                 Content="Удалить" />
+        <Button x:Name="button"
+                Grid.Row="2"
+                Width="75"
+                Height="20"
+                Margin="185,0,0,20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Command="{Binding Path=SaveCommand}"
+                Content="Сохранить" />
         <Expander x:Name="infoExpander"
                   Grid.Row="2"
                   Grid.Column="1"

@@ -2,6 +2,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using MyMoneyManager.Infrastucture.DataTransferObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,9 +73,14 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
             ExpensesType = expensesType;
         }
 
-        public void ConvertToVO(out IViewElement newVO)
+        public IViewElement ConvertToVO()
         {
-            newVO = new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), EnumWorker.GetDescriptionFromValue(ExpensesType.ToString()));
+            return new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), EnumWorker.GetDescriptionFromValue(ExpensesType.ToString()));
+        }
+
+        public IDtoObject ConvertToDTO(byte currency)
+        {
+            return new ExpensesDto(Id, Expenditure, Comment, СostsDate, (byte)ExpensesType, currency);
         }
 
         public Guid GetId()

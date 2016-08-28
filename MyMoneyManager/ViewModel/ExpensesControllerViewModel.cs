@@ -14,13 +14,14 @@ using MyMoneyManager.Model;
 using MyMoneyManager.Model.Expenses.BusinessObject;
 using MyMoneyManager.Workers;
 using System.ComponentModel;
+using MyMoneyManager.ViewModel.ClassesForVM.Searchers;
 
 namespace MyMoneyManager.ViewModel
 {
 
     public class ExpensesControllerViewModel : ViewModelBase, 
         IMainTabItem,
-        IConnectedExpensesViewModel
+        IConnectedViewModel
     {
 
         #region Properties
@@ -47,11 +48,11 @@ namespace MyMoneyManager.ViewModel
             {
                 if (initIsComplete && searchStringContent.Count() < value.Count())
                 {
-                    SearchV1(value, ExpensesInfos);
+                    Search(value, ExpensesInfos);
                 }
                 else if(initIsComplete)
                 {
-                    SearchV1(value, listOfViewObj);
+                    Search(value, listOfViewObj);
                 }
                 searchStringContent = value;
                 OnPropertyChanged("SearchStringContent");
@@ -112,13 +113,13 @@ namespace MyMoneyManager.ViewModel
 
         public double ExpensesDiap1
         {
-            get { return expensesDiap1; }
+            get { return Math.Round(expensesDiap1, DefaultValuesForControllers.Instance.DefaultDecimals); }
             set
             {
                 expensesDiap1 = value;
                 if (initIsComplete)
                 {
-                    SearchV1(SearchStringContent, listOfViewObj);
+                    Search(SearchStringContent, listOfViewObj);
                 }
                 OnPropertyChanged("ExpensesDiap1");
             }
@@ -129,13 +130,13 @@ namespace MyMoneyManager.ViewModel
 
         public double ExpensesDiap2
         {
-            get { return expensesDiap2; }
+            get { return Math.Round(expensesDiap2, DefaultValuesForControllers.Instance.DefaultDecimals); }
             set
             {
                 expensesDiap2 = value;
                 if (initIsComplete)
                 {
-                    SearchV1(SearchStringContent, listOfViewObj);
+                    Search(SearchStringContent, listOfViewObj);
                 }
                 OnPropertyChanged("ExpensesDiap2");
             }
@@ -155,9 +156,12 @@ namespace MyMoneyManager.ViewModel
                     selectedExchangeRate = value;
                     if (initIsComplete)
                     {
-                        SetNewExchangeRateInColl(listOfViewObj, PreviousExchangeRate, SelectedExchangeRate, 10);
-                        SearchV1(SearchStringContent, listOfViewObj);
-                        SetMaxExpensesValue();
+                        MoneyWorker.SetNewExchangeRateInColl(listOfViewObj, PreviousExchangeRate, SelectedExchangeRate, 10);
+                        expensesDiap1 = MoneyWorker.ChangeCurrency(expensesDiap1 , PreviousExchangeRate, SelectedExchangeRate, 10);
+                        OnPropertyChanged("ExpensesDiap1");
+                        expensesDiap2 = MoneyWorker.ChangeCurrency(expensesDiap2 , PreviousExchangeRate, SelectedExchangeRate, 10);
+                        OnPropertyChanged("ExpensesDiap2");
+                        Search(SearchStringContent, listOfViewObj);
                     }
                     OnPropertyChanged("SelectedExchangeRate");
                 }
@@ -185,7 +189,7 @@ namespace MyMoneyManager.ViewModel
             set
             {
                 isDateConsider = value;
-                SearchV1(SearchStringContent, listOfViewObj);
+                Search(SearchStringContent, listOfViewObj);
                 OnPropertyChanged("IsDateConsider");
             }
         }
@@ -206,7 +210,7 @@ namespace MyMoneyManager.ViewModel
                     fromExpensesDate = value;
                     if (initIsComplete)
                     {
-                        SearchV1(SearchStringContent, listOfViewObj);
+                        Search(SearchStringContent, listOfViewObj);
                         ChartContextChanged();
                     }
                     OnPropertyChanged("FromExpensesDate");
@@ -228,7 +232,7 @@ namespace MyMoneyManager.ViewModel
                     toExpensesDate = value;
                     if (initIsComplete)
                     {
-                        SearchV1(SearchStringContent, listOfViewObj);
+                        Search(SearchStringContent, listOfViewObj);
                         ChartContextChanged();
                     }
                     OnPropertyChanged("ToExpensesDate");
@@ -247,7 +251,7 @@ namespace MyMoneyManager.ViewModel
                 selectedExpensesType = value;
                 if (initIsComplete)
                 {
-                    SearchV1(SearchStringContent, listOfViewObj);
+                    Search(SearchStringContent, listOfViewObj);
                 }
                 OnPropertyChanged("SelectedExpensesType");
             }
@@ -325,6 +329,9 @@ namespace MyMoneyManager.ViewModel
 
         #endregion
 
+
+        private readonly IExpensesSearcher _searcher;
+        private readonly JsonWorker<ExpensesInfo> _jsonWorker;
         private MediatorForVM VVM;
         private DefaultValuesForControllers defaultValues;
         private bool initIsComplete = false;
@@ -332,76 +339,45 @@ namespace MyMoneyManager.ViewModel
 
         public ExpensesControllerViewModel()
         {
+            _searcher = new LambdaExpensesSearcher();
+            _jsonWorker = new JsonWorker<ExpensesInfo>();
             Init();
-            DeleteCommand = new RelayCommand(arg => DeleteExpenses(), x => CanDelete());
-            AddCommand = new RelayCommand(arg => AddExpenses(), x => CanAdd());
-            EditCommand = new RelayCommand(arg => EditExpenses(), x => CanEdit());
         }
 
-        private void SearchV1(string searchingText, IEnumerable<ViewExpensesInfo> lst)
+        private void Search(string searchingText, IEnumerable<ViewExpensesInfo> lst)
         {
-            List<ViewExpensesInfo> SearchedExpenses = new List<ViewExpensesInfo>();
-
-            foreach (ViewExpensesInfo item in lst)
-            {
-                SearchedExpenses.Add(item.Clone());
-            }
-
-            if (searchingText != null && searchingText != string.Empty && searchingText != defaultValues.DefaultSearchStringContent)
-            {
-                SearchedExpenses = SearchedExpenses.Where(expensesInfo => expensesInfo.Comment.IndexOf(searchingText, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            }
-
-            if (IsDateConsider)
-            {
-                SearchedExpenses = SearchedExpenses.Where(expensesInfo => (DateTime.Compare(DateTime.Parse(expensesInfo.CostsDate), FromExpensesDate) >= 0) && (DateTime.Compare(DateTime.Parse(expensesInfo.CostsDate), ToExpensesDate) <= 0)).ToList();
-            }
-
-            if (SelectedExpensesType != ExpensesType.Any)
-            {
-                SearchedExpenses = SearchedExpenses.Where(expensesInfo => expensesInfo.ExpensesType == SelectedExpensesType.GetType()
-                                                    .GetMember(SelectedExpensesType.ToString())[0]
-                                                    .GetCustomAttributes(true)
-                                                    .OfType<DescriptionAttribute>()
-                                                    .First()
-                                                    .Description).ToList();
-            }
-
-            SearchedExpenses = SearchedExpenses.Where(expensesInfo => expensesInfo.Expenditure >= ExpensesDiap1 && expensesInfo.Expenditure <= ExpensesDiap2).ToList();
-
+            IEnumerable<ViewExpensesInfo> foundExpensesInfos = _searcher.Search(searchingText, FromExpensesDate,
+                ToExpensesDate, IsDateConsider, SelectedExpensesType, expensesDiap1, expensesDiap2, lst);
             ExpensesInfos.Clear();
-            foreach (ViewExpensesInfo exp in SearchedExpenses)
+            foreach (var item in foundExpensesInfos)
             {
-                exp.Expenditure = Math.Round(exp.Expenditure, defaultValues.DefaultDecimals);
-                ExpensesInfos.Add(exp);
+                ExpensesInfos.Add(item);
             }
-
         }
-        
+
         private void ResetMainCollections()
         {
             ExpensesInfos.Clear();
             listOfViewObj = new List<ViewExpensesInfo>();
-            var coll = JsonWorker.GetElementsFrom(typeof(ExpensesInfo));
-            IViewElement VO;
-            foreach (var item in coll)
+            var coll = _jsonWorker.GetElements();
+            foreach (ExpensesInfo item in coll)
             {
-                MyObjectsConverter.ConvertBOtoVO(item, out VO);
-                ViewExpensesInfo newObj = (ViewExpensesInfo)VO;
-                ExpensesInfos.Add(newObj);
-                listOfViewObj.Add(newObj.Clone());
+                ExpensesInfos.Add((ViewExpensesInfo)item.ConvertToVO());
+                listOfViewObj.Add((ViewExpensesInfo)item.ConvertToVO().Clone());
             }
         }
 
-        private void SetNewExchangeRateInColl(IEnumerable<ViewExpensesInfo> coll, string oldExchangeRate, string newExchangeRate, int decimals)
+        private void SaveExpenses()
         {
-            foreach (ViewExpensesInfo item in coll)
-            {
-                item.Expenditure = Math.Round((item.Expenditure * MoneyWorker.GetExchangeRateValue((ExchangeRateEnum)Enum.Parse(typeof(ExchangeRateEnum), oldExchangeRate)))
-                    / MoneyWorker.GetExchangeRateValue((ExchangeRateEnum)Enum.Parse(typeof(ExchangeRateEnum), newExchangeRate)), decimals);
-            }
+            int a = (int)Enum.Parse(typeof(ExchangeRateEnum), selectedExchangeRate);
+            byte b = (byte)a;
+            _jsonWorker.SynchronizeWithDB(b);
         }
 
+        private bool CanSave()
+        {
+            return true;
+        }
 
         #region DeleteExpenses
 
@@ -410,9 +386,7 @@ namespace MyMoneyManager.ViewModel
             var deleteItem = listOfViewObj.FirstOrDefault(exp => exp.Id == SelectedExpensesInfo.Id);
             listOfViewObj.Remove(deleteItem);
             ExpensesInfos.Remove(SelectedExpensesInfo);
-            IMoneyElement newBO;
-            MyObjectsConverter.ConvertVOtoBO(deleteItem, out newBO);
-            JsonWorker.DeleteElement(newBO);
+            _jsonWorker.DeleteElement((ExpensesInfo)deleteItem.ConvertToBO());
         }
 
         private bool CanDelete()
@@ -483,6 +457,10 @@ namespace MyMoneyManager.ViewModel
 
         private void Init()
         {
+            DeleteCommand = new RelayCommand(arg => DeleteExpenses(), x => CanDelete());
+            AddCommand = new RelayCommand(arg => AddExpenses(), x => CanAdd());
+            EditCommand = new RelayCommand(arg => EditExpenses(), x => CanEdit());
+            SaveCommand = new RelayCommand(arg => SaveExpenses(), x=> CanSave());
             VVM = MediatorForVM.Instance;
             defaultValues = DefaultValuesForControllers.Instance;
             VVM.ExpensesController = this;
@@ -507,7 +485,7 @@ namespace MyMoneyManager.ViewModel
 
             if (expLst.Count != 0)
             {
-                ExpensesDiap2 = Math.Round(expLst.Max(), defaultValues.DefaultDecimals);
+                ExpensesDiap2 = Math.Round(expLst.Max() + 1 / Math.Pow(10, defaultValues.DefaultDecimals), defaultValues.DefaultDecimals);
             }
         }
 
@@ -517,51 +495,56 @@ namespace MyMoneyManager.ViewModel
 
             foreach (var item in listOfViewObj)
             {
-                orderedColl.Add(item.Clone());
+                ViewExpensesInfo newItem = (ViewExpensesInfo)item.Clone();
+                newItem.Expenditure = Math.Round(newItem.Expenditure, DefaultValuesForControllers.Instance.DefaultDecimals);
+                orderedColl.Add(newItem);
             }
 
             orderedColl = orderedColl.Where(exp => (DateTime.Compare(DateTime.Parse(exp.CostsDate), FromExpensesDate) >= 0)
                     && (DateTime.Compare(DateTime.Parse(exp.CostsDate), ToExpensesDate) <= 0)).OrderBy(exp => DateTime.Parse(exp.CostsDate)).ToList();
 
-            
-            foreach (var exp in orderedColl)
+            for (int i = 0; i < orderedColl.Count; i++)
             {
-                SendExpenses(VVM.LineChart, exp);
-                SendExpenses(VVM.PieChart, exp);
+                if (orderedColl.Count - 1 == i)
+                {
+                    ChartWorker.isLastObjForChart = true;
+                }
+                SendExpenses(VVM.LineChart, orderedColl.ToArray()[i]);
+                SendExpenses(VVM.PieChart, orderedColl.ToArray()[i]);
             }
+            ChartWorker.isLastObjForChart = false;
 
-            SendExpenses(VVM.LineChart, null);
-            SendExpenses(VVM.PieChart, null);
         }
 
         
 
-        public void SendExpenses(IConnectedExpensesViewModel to, ViewExpensesInfo message)
+        public void SendExpenses(IConnectedViewModel to, IViewElement message)
         {
             VVM.SendExpensesTo(to, message);
         }
 
-        public void NotifyAboutExpenses(ViewExpensesInfo message)
+        public void NotifyAboutExpenses(IViewElement message)
         {
-            if (message != null)
+            ViewExpensesInfo expensesInfo = (ViewExpensesInfo)message;
+            if (expensesInfo != null)
             {
-                message.ExpensesType = EnumWorker.GetDescriptionFromValue(message.ExpensesType);
+                expensesInfo.ExpensesType = EnumWorker.GetDescriptionFromValue(expensesInfo.ExpensesType);
                 if (TabItemName == "Редактирование расхода")
                 {
-                    ExpensesInfos.Add(message);
-                    listOfViewObj.Add(message);
+                    ExpensesInfos.Add(expensesInfo);
+                    listOfViewObj.Add(expensesInfo);
                     var deleteItem = listOfViewObj.FirstOrDefault(exp => exp.Id == SelectedExpensesInfo.Id);
                     listOfViewObj.Remove(deleteItem);
                     ExpensesInfos.Remove(SelectedExpensesInfo);
-                    SelectedExpensesInfo = message;
+                    SelectedExpensesInfo = expensesInfo;
                     SetMaxExpensesValue();
                     TabVisibility = false;
                     DisplayXamlTab = false;
                 }
                 else
                 {
-                    ExpensesInfos.Add(message);
-                    listOfViewObj.Add(message);
+                    ExpensesInfos.Add(expensesInfo);
+                    listOfViewObj.Add(expensesInfo);
                     SetMaxExpensesValue();
                     TabVisibility = false;
                     DisplayXamlTab = false;
@@ -593,6 +576,8 @@ namespace MyMoneyManager.ViewModel
         /// Get or set EditCommand
         /// </summary>
         public ICommand EditCommand { get; set; }
+
+        public ICommand SaveCommand { get; set; }
 
         #endregion
 

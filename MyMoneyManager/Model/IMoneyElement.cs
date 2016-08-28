@@ -1,12 +1,9 @@
-﻿
-
-using System;
+﻿using MyMoneyManager.Infrastucture.DataTransferObjects;
 
 namespace MyMoneyManager.Model
 {
-    public interface IMoneyElement
+    public interface IMoneyElement : IBusinessObject
     {
-        void ConvertToVO(out IViewElement newVO);
-        Guid GetId();
+        IDtoObject ConvertToDTO(byte currency);
     }
 }

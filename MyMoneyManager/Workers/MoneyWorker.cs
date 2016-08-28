@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyMoneyManager.Model.Expenses.ViewObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace MyMoneyManager.Workers
 {
     public enum ExchangeRateEnum
     {
-        RU,
-        USD,
-        EUR
+        RU = 1,
+        USD = 2,
+        EUR = 3
     }
 
     public class MoneyWorker
@@ -34,6 +35,20 @@ namespace MyMoneyManager.Workers
         static public double GetAverageIncomingValue()
         {
             return 0;
+        }
+
+        static public void SetNewExchangeRateInColl(IEnumerable<ViewExpensesInfo> coll, string oldExchangeRate, string newExchangeRate, int decimals)
+        {
+            foreach (ViewExpensesInfo item in coll)
+            {
+                item.Expenditure = ChangeCurrency(item.Expenditure, oldExchangeRate, newExchangeRate, decimals);
+            }
+        }
+
+        static public double ChangeCurrency(double value, string oldExchangeRate, string newExchangeRate, int decimals)
+        {
+            return value = Math.Round((value * GetExchangeRateValue((ExchangeRateEnum)Enum.Parse(typeof(ExchangeRateEnum), oldExchangeRate)))
+                    / GetExchangeRateValue((ExchangeRateEnum)Enum.Parse(typeof(ExchangeRateEnum), newExchangeRate)), decimals);
         }
     }
 }

@@ -9,16 +9,16 @@ namespace MyMoneyManager.Infrastucture
 {
     public class Interlayer
     {
-        private List<IDtoObject> elementsFromDb = new List<IDtoObject>();
-        private List<IDtoObject> elementsFromClient = new List<IDtoObject>();
+        private List<DtoObject> elementsFromDb = new List<DtoObject>();
+        private List<DtoObject> elementsFromClient = new List<DtoObject>();
 
-        public void SplitNewElements(List<IDtoObject> newElements, out List<IDtoObject> addedElements, out List<IDtoObject> changedElements, out List<IDtoObject> deletedElements)
+        public void SplitNewElements(List<DtoObject> newElements, out List<DtoObject> addedElements, out List<DtoObject> changedElements, out List<DtoObject> deletedElements)
         {
             elementsFromClient = newElements;
 
-            addedElements = new List<IDtoObject>();
-            changedElements = new List<IDtoObject>();
-            deletedElements = new List<IDtoObject>();
+            addedElements = new List<DtoObject>();
+            changedElements = new List<DtoObject>();
+            deletedElements = new List<DtoObject>();
 
             bool isOldEl = false;
 
@@ -26,18 +26,18 @@ namespace MyMoneyManager.Infrastucture
 
             foreach (var item in elementsFromClient)
             {
-                lstClientIds.Add(item.GetId());
+                lstClientIds.Add(item.Id);
             }
 
             deletedElements = (from dbElement in elementsFromDb
-                               where !lstClientIds.Contains(dbElement.GetId())
+                               where !lstClientIds.Contains(dbElement.Id)
                                select dbElement).ToList();
 
             foreach (var clientElement in elementsFromClient)
             {
                 foreach (var dbElement in elementsFromDb)
                 {
-                    if (dbElement.GetId() == clientElement.GetId())
+                    if (dbElement.Id == clientElement.Id)
                     {
                         if(!dbElement.IsEqual(clientElement))
                         {
@@ -57,7 +57,7 @@ namespace MyMoneyManager.Infrastucture
             elementsFromDb = elementsFromClient;
         }
 
-        public void SetElementsFromDb(List<IDtoObject> lst)
+        public void SetElementsFromDb(List<DtoObject> lst)
         {
             elementsFromDb = lst;
         }

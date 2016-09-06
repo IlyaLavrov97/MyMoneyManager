@@ -32,6 +32,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTransferObjects\ExpensesDto.cs" />
-    <Compile Include="DataTransferObjects\IDtoItem.cs" />
-    <Compile Include="DataTransferObjects\IDtoObject.cs" />
-    <Compile Include="DataTransferObjects\IDtoSetting.cs" />
+    <Compile Include="DataTransferObjects\DtoItem.cs" />
+    <Compile Include="DataTransferObjects\DtoObject.cs" />
+    <Compile Include="DataTransferObjects\DtoSetting.cs" />
     <Compile Include="Interlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

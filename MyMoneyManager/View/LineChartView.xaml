@@ -22,12 +22,12 @@
                        LegendLocation="Right"
                        Series="{Binding Series}">
             <lvc:LineChart.AxisY>
-                <lvc:Axis Title="Sold Items"
+                <lvc:Axis Title="Amount of money"
                           IsMerged="False"
                           Position="LeftBottom" />
             </lvc:LineChart.AxisY>
             <lvc:LineChart.AxisX>
-                <lvc:Axis Title="Month" Labels="{Binding Path=AxisX}" />
+                <lvc:Axis Title="Date" Labels="{Binding Path=AxisX}" />
             </lvc:LineChart.AxisX>
         </lvc:LineChart>
     </Grid>

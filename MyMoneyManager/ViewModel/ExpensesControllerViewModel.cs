@@ -436,7 +436,7 @@ namespace MyMoneyManager.ViewModel
                 TabVisibility = true;
                 DisplayXamlTab = true;
                 ViewExpensesInfo editExpensesInfo = new ViewExpensesInfo(SelectedExpensesInfo.Id, SelectedExpensesInfo.Expenditure, SelectedExpensesInfo.Comment, SelectedExpensesInfo.CostsDate, SelectedExpensesInfo.ExpensesType);
-                SendExpenses(VVM.AddOrEditExpenses, editExpensesInfo);
+                Send(VVM.AddOrEditExpenses, editExpensesInfo);
             }
 
         }
@@ -509,8 +509,8 @@ namespace MyMoneyManager.ViewModel
                 {
                     ChartWorker.isLastObjForChart = true;
                 }
-                SendExpenses(VVM.LineChart, orderedColl.ToArray()[i]);
-                SendExpenses(VVM.PieChart, orderedColl.ToArray()[i]);
+                Send(VVM.LineChart, orderedColl.ToArray()[i]);
+                Send(VVM.PieChart, orderedColl.ToArray()[i]);
             }
             ChartWorker.isLastObjForChart = false;
 
@@ -518,12 +518,12 @@ namespace MyMoneyManager.ViewModel
 
         
 
-        public void SendExpenses(IConnectedViewModel to, IViewElement message)
+        public void Send(IConnectedViewModel to, IViewElement message)
         {
-            VVM.SendExpensesTo(to, message);
+            VVM.SendTo(to, message);
         }
 
-        public void NotifyAboutExpenses(IViewElement message)
+        public void NotifyAbout(IViewElement message)
         {
             ViewExpensesInfo expensesInfo = (ViewExpensesInfo)message;
             if (expensesInfo != null)

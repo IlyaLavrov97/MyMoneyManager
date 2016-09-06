@@ -56,12 +56,12 @@ namespace MyMoneyManager.ViewModel
         }
         
 
-        public void SendExpenses(IConnectedViewModel to, IViewElement message)
+        public void Send(IConnectedViewModel to, IViewElement message)
         {
             throw new NotImplementedException();
         }
 
-        public void NotifyAboutExpenses(IViewElement message)
+        public void NotifyAbout(IViewElement message)
         {
             bool isNewSeries = true;
             LineSeries oldSerries = new LineSeries();

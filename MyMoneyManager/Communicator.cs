@@ -10,41 +10,41 @@ namespace MyMoneyManager
 {
     public class Communicator<T>
     {
-        private readonly ServerModule _serverModule;
-        
+        private readonly ManagerSevice.ServiceModuleClient _client;
+
         public Communicator()
         {
-            _serverModule = new ServerModule();
+            _client = new ManagerSevice.ServiceModuleClient("NetTcpBinding_IServiceModule");
         } 
 
-        public void AddItemsToDb(List<IDtoObject> newItems)
+        public void AddItemsToDb(List<DtoObject> newItems)
         {
             foreach (var item in newItems)
             {
-                _serverModule.AddItemToDb(item);
+                _client.AddItemToDb(item);
             }
         }
 
-        public void EditItemsInDb(List<IDtoObject> chagedItems)
+        public void EditItemsInDb(List<DtoObject> chagedItems)
         {
             foreach (var item in chagedItems)
             {
-                _serverModule.EditItemInDb(item);
+                _client.EditItemInDb(item);
             }
         }
 
-        public void DeleteItemsFromDb(List<IDtoObject> deletedItems)
+        public void DeleteItemsFromDb(List<DtoObject> deletedItems)
         {
             foreach (var item in deletedItems)
             {
-                _serverModule.DeleteItemFromDb(item);
+                _client.DeleteItemFromDb(item);
             }
         }
 
-        public List<IDtoObject> GetItemsFromDb(int requestId, DateTime time1, DateTime time2, double value1, double value2, string comment, byte expType)
+        public List<DtoObject> GetItemsFromDb(int requestId, DateTime time1, DateTime time2, double value1, double value2, string comment, byte expType)
         {
-            List<IDtoObject> lstOfDto = new List<IDtoObject>();
-            lstOfDto = _serverModule.GetItemsFromDb(requestId, time1, time2, value1, value2, comment, expType);
+            List<DtoObject> lstOfDto = new List<DtoObject>();
+            lstOfDto = _client.GetItemsFromDb(requestId, time1, time2, value1, value2, comment, expType).ToList();
             return lstOfDto;
         }
     }

@@ -54,6 +54,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -84,6 +86,11 @@
     <Compile Include="Model\ChartInterfaces\ILineChartPictured.cs" />
     <Compile Include="Model\IBusinessObject.cs" />
     <Compile Include="Model\ISetting.cs" />
+    <Compile Include="Service References\ManagerSevice\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\ClassesForVM\Searchers\LambdaExpensesSearcher.cs" />
     <Compile Include="ViewModel\ClassesForVM\Searchers\IExpensesSearcher.cs" />
     <Compile Include="ViewModel\LineChartViewModel.cs" />
@@ -147,11 +154,22 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\MyMoneyManager.Infrastucture.DataTransferObjects.DtoObject.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\ManagerSevice\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ManagerSevice\item1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ManagerSevice\item2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ManagerSevice\ServiceModule.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -202,7 +220,27 @@
       <Name>MyMoneyManager.Server</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ManagerSevice\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ManagerSevice\item.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ManagerSevice\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ManagerSevice\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ManagerSevice\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

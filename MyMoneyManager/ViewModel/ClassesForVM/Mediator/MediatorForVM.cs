@@ -26,11 +26,11 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
             }
         }
 
-        public void SendExpensesTo(IConnectedViewModel vm, IViewElement exp)
+        public void SendTo(IConnectedViewModel vm, IViewElement exp)
         {
             if (vm != null)
             {
-                vm.NotifyAboutExpenses(exp);
+                vm.NotifyAbout(exp);
             }
         }
     }

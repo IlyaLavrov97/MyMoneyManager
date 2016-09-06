@@ -10,6 +10,6 @@ namespace MyMoneyManager.ViewModel.ClassesForVM.Mediator
 {
     public interface IMediator
     {
-        void SendExpensesTo(IConnectedViewModel to, IViewElement obj);
+        void SendTo(IConnectedViewModel to, IViewElement obj);
     }
 }

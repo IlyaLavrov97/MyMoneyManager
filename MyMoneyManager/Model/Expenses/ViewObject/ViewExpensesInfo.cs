@@ -57,7 +57,7 @@ namespace MyMoneyManager.Model.Expenses.ViewObject
             ExpensesType = expensesType;
         }
 
-        public IMoneyElement ConvertToBO()
+        public IBusinessObject ConvertToBO()
         {
             return new ExpensesInfo(Id,Expenditure, Comment, DateTime.Parse(CostsDate), (ExpensesType)Enum.Parse(typeof(ExpensesType), EnumWorker.GetValueFromDescription(ExpensesType) == 0 ? ExpensesType : EnumWorker.GetValueFromDescription(ExpensesType).ToString()));
         }

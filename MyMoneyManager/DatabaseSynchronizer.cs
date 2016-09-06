@@ -32,17 +32,18 @@ namespace MyMoneyManager
             return false;
         }
 
-        public List<T> GetReliableObjectsFromDB()
+        public bool GetReliableObjectsFromDB(out List<T> listOfBusinessObject)
         {
-            List<T> listOfBusinessObject = new List<T>();
+            listOfBusinessObject = new List<T>();
             if (IsServerConnected())
             {
                 foreach (var item in _clientModule.GetMoneyElementsFromDb(typeof(T), DateTime.MinValue, DateTime.MaxValue))
                 {
                     listOfBusinessObject.Add((T)item);
                 }
+                return true;
             }
-            return listOfBusinessObject;
+            return false;
         }
 
         private bool IsServerConnected()

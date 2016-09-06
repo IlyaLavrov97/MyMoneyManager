@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/MyMoneyManager.Infrastucture.DataTransferObjects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/MyMoneyManager.Infrastucture.DataTransferObjects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:8080/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="DtoObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DtoObject" nillable="true" type="tns:DtoObject" />
+  <xs:complexType name="DtoItem">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DtoObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AmountOfMoney" type="xs:double" />
+          <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Currency" type="xs:unsignedByte" />
+          <xs:element minOccurs="0" name="DateOfOperation" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DtoItem" nillable="true" type="tns:DtoItem" />
+  <xs:complexType name="ExpensesDto">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DtoItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ExpensesType" type="xs:unsignedByte" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ExpensesDto" nillable="true" type="tns:ExpensesDto" />
+  <xs:complexType name="DtoSetting">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DtoObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="JsonSetting" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DtoSetting" nillable="true" type="tns:DtoSetting" />
+  <xs:complexType name="ArrayOfDtoObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DtoObject" nillable="true" type="tns:DtoObject" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDtoObject" nillable="true" type="tns:ArrayOfDtoObject" />
+</xs:schema>

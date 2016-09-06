@@ -4,6 +4,6 @@ namespace MyMoneyManager.Model
 {
     public interface IMoneyElement : IBusinessObject
     {
-        IDtoObject ConvertToDTO(byte currency);
+        DtoObject ConvertToDTO(byte currency);
     }
 }

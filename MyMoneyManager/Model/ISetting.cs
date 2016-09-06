@@ -4,6 +4,6 @@ namespace MyMoneyManager.Model
 {
     public interface ISetting : IBusinessObject
     {
-        IDtoSetting ConvertToDTO();
+        DtoSetting ConvertToDTO();
     }
 }

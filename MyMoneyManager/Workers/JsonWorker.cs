@@ -42,15 +42,12 @@ namespace MyMoneyManager.Workers
             {
                 Pull();
             }
-            List<T> ValueList = new List<T>();
-            ValueList.AddRange(listOfBusinessObject);
-            return ValueList;
+            return listOfBusinessObject;
         }
 
         private void Pull()
         {
-            listOfBusinessObject = _databaseSyncronizer.GetReliableObjectsFromDB();
-            if (listOfBusinessObject.Count == 0)
+            if  (!_databaseSyncronizer.GetReliableObjectsFromDB(out listOfBusinessObject))
             {
                 GetJsonObjects();
                 // TODO: Оповещение о неподключенной БД.

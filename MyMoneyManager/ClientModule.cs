@@ -40,9 +40,9 @@ namespace MyMoneyManager
         {
             Currency = currency;
 
-            List<IDtoObject> addedElements = new List<IDtoObject>();
-            List<IDtoObject> changedElements = new List<IDtoObject>();
-            List<IDtoObject> deletedElements = new List<IDtoObject>();
+            List<DtoObject> addedElements = new List<DtoObject>();
+            List<DtoObject> changedElements = new List<DtoObject>();
+            List<DtoObject> deletedElements = new List<DtoObject>();
 
             _interlayer.SplitNewElements(ConvertCollToDto(newMoneyElements), out addedElements, out changedElements, out deletedElements);
 
@@ -65,16 +65,16 @@ namespace MyMoneyManager
 
         public List<IBusinessObject> GetMoneyElementsFromDb(Type type, DateTime time1, DateTime time2, double value1 = 0, double value2 = double.MaxValue, string comment = null, byte expType = 0)
         {
-            List<IDtoObject> newDtoLst = new List<IDtoObject>();
+            List<DtoObject> newDtoLst = new List<DtoObject>();
             newDtoLst = _communicator.GetItemsFromDb(typeToInt(type), time1, time2, value1, value2, comment, expType);
             _interlayer.SetElementsFromDb(newDtoLst);
             List<IBusinessObject> lstOfMoneyElement = ConvertCollToBO(newDtoLst);
             return lstOfMoneyElement;
         }
 
-        private List<IDtoObject> ConvertCollToDto(List<IBusinessObject> newColl)
+        private List<DtoObject> ConvertCollToDto(List<IBusinessObject> newColl)
         {
-            List<IDtoObject> lstDtoItems = new List<IDtoObject>();
+            List<DtoObject> lstDtoItems = new List<DtoObject>();
             foreach (IMoneyElement item in newColl)
             {
                 lstDtoItems.Add(item.ConvertToDTO(Currency));
@@ -82,20 +82,20 @@ namespace MyMoneyManager
             return lstDtoItems;
         }
 
-        private List<IBusinessObject> ConvertCollToBO(List<IDtoObject> newColl)
+        private List<IBusinessObject> ConvertCollToBO(List<DtoObject> newColl)
         {
             List<IBusinessObject> lstDtoItems = new List<IBusinessObject>();
-            foreach (IDtoObject item in newColl)
+            foreach (DtoObject item in newColl)
             {
                 if (item is ExpensesDto)
                 {
                     ExpensesDto dto = (ExpensesDto)item;
                     ExpensesInfo newExp = new ExpensesInfo(dto.Id,
-                        MoneyWorker.ChangeCurrency(dto.Expenditure,
+                        MoneyWorker.ChangeCurrency(dto.AmountOfMoney,
                         Enum.Parse(typeof(ExchangeRateEnum), ((ExchangeRateEnum)dto.Currency).ToString()).ToString(), 
                         DefaultValuesForControllers.Instance.DefaultExchangeRate, 
                         DefaultValuesForControllers.Instance.DefaultDecimals), 
-                        dto.Comment, dto.CostsDate, (ExpensesType)dto.ExpensesType);
+                        dto.Comment, dto.DateOfOperation, (ExpensesType)dto.ExpensesType);
                     lstDtoItems.Add(newExp);
                 }
                 
@@ -117,17 +117,17 @@ namespace MyMoneyManager
             return 0;
         }
 
-        private void AddItemsToDb(List<IDtoObject> newItems)
+        private void AddItemsToDb(List<DtoObject> newItems)
         {
             _communicator.AddItemsToDb(newItems);
         }
 
-        private void EditItemsInDb(List<IDtoObject> changedItems)
+        private void EditItemsInDb(List<DtoObject> changedItems)
         {
             _communicator.EditItemsInDb(changedItems);
         }
 
-        private void DeleteItemsFromDb(List<IDtoObject> deletedItems)
+        private void DeleteItemsFromDb(List<DtoObject> deletedItems)
         {
             _communicator.DeleteItemsFromDb(deletedItems);
         }

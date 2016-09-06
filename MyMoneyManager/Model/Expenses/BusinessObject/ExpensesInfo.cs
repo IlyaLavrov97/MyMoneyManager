@@ -78,7 +78,7 @@ namespace MyMoneyManager.Model.Expenses.BusinessObject
             return new ViewExpensesInfo(Id, Expenditure, Comment, СostsDate.ToShortDateString(), EnumWorker.GetDescriptionFromValue(ExpensesType.ToString()));
         }
 
-        public IDtoObject ConvertToDTO(byte currency)
+        public DtoObject ConvertToDTO(byte currency)
         {
             return new ExpensesDto(Id, Expenditure, Comment, СostsDate, (byte)ExpensesType, currency);
         }

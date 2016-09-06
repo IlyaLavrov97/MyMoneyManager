@@ -9,7 +9,7 @@ namespace MyMoneyManager.Model
 {
     public interface IViewElement : ILineChartPictured
     {
-        IMoneyElement ConvertToBO();
+        IBusinessObject ConvertToBO();
         Guid GetId();
         IViewElement Clone();
     }

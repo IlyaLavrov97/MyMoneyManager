@@ -42,12 +42,12 @@ namespace MyMoneyManager.ViewModel
             VVM.PieChart = this;
         }
 
-        public void SendExpenses(IConnectedViewModel to, IViewElement message)
+        public void Send(IConnectedViewModel to, IViewElement message)
         {
             throw new NotImplementedException();
         }
 
-        public void NotifyAboutExpenses(IViewElement message)
+        public void NotifyAbout(IViewElement message)
         {
             //double myValue;
             //if (message != null)

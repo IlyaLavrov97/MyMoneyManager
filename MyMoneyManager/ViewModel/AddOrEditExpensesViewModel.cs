@@ -101,12 +101,12 @@ namespace MyMoneyManager.ViewModel
                 {
                     ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesId, NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.ToString());
                     _jsonWorker.DeleteElement(oldMoneyElement);
-                    SendExpenses(VVM.ExpensesController,exp);
+                    Send(VVM.ExpensesController,exp);
                 }
                 else
                 {
                     ViewExpensesInfo exp = new ViewExpensesInfo(NewExpensesValue, NewExpensesComment, NewExpensesDate.ToShortDateString(), NewExpensesType.ToString());
-                    SendExpenses(VVM.ExpensesController,exp);
+                    Send(VVM.ExpensesController,exp);
                     
                 }
         }
@@ -125,7 +125,7 @@ namespace MyMoneyManager.ViewModel
 
         private void Cancel()
         {
-            SendExpenses(VVM.ExpensesController, null);
+            Send(VVM.ExpensesController, null);
         }
 
         private bool CanCancel()
@@ -157,19 +157,19 @@ namespace MyMoneyManager.ViewModel
             NewExpensesValue = 0;
         }
 
-        public void SendExpenses(IConnectedViewModel to, IViewElement message)
+        public void Send(IConnectedViewModel to, IViewElement message)
         {
             if (message != null)
             {
                 _jsonWorker.AddElement((ExpensesInfo)message.ConvertToBO());
             }
 
-            VVM.SendExpensesTo(to, message);
+            VVM.SendTo(to, message);
 
             Reset();
         }
 
-        public void NotifyAboutExpenses(IViewElement message)
+        public void NotifyAbout(IViewElement message)
         {
             ViewExpensesInfo expensesInfo = (ViewExpensesInfo)message;
             NewExpensesId = expensesInfo.Id;
